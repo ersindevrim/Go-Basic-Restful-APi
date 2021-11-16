@@ -24,9 +24,27 @@ const (
 )
 
 func GetAllFoods(writer http.ResponseWriter, request *http.Request) {
+	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	db, _ := sql.Open("postgres", psqlconn)
+	defer db.Close()
+
+	rows, err := db.Query(`SELECT "Id","Name","Desc","Photo" FROM "Food"`)
+
 	writer.Header().Add("Content-Type", "application/json")
+	if err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+	}
+	foods := []models.Food{}
+
+	for rows.Next() {
+		var food models.Food
+		rows.Scan(&food.Id, &food.Name, &food.Desc, &food.Photo)
+
+		foods = append(foods, food)
+	}
+
 	writer.WriteHeader(http.StatusOK)
-	json.NewEncoder(writer).Encode(mocks.Foods)
+	json.NewEncoder(writer).Encode(foods)
 }
 
 func GetFood(writer http.ResponseWriter, request *http.Request) {
