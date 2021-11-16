@@ -28,7 +28,7 @@ func main() {
 	//   200
 
 	// Returns string.
-	// swagger:response string
+	// swagger:response FoodResponse
 	router.HandleFunc("/foods", handlers.AddFood).Methods("POST")
 
 	// swagger:route Get /foods/{id} Foods GetFoodById
@@ -52,7 +52,7 @@ func main() {
 	// swagger:route DELETE /foods/{id} Foods DeleteFoodById
 	// Updates spesific food
 	// responses:
-	//   200
+	//   200: string
 
 	// This endpoint returns string
 	// swagger:response string
