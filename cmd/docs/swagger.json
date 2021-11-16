@@ -1,0 +1,104 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "Documentation of Food API with GO.",
+    "title": "Go Api",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/foods": {
+      "get": {
+        "tags": [
+          "Foods"
+        ],
+        "summary": "Returns all foods.",
+        "operationId": "GetAllFoods",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/FoodResponse"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Foods"
+        ],
+        "summary": "Creates new foods.",
+        "operationId": "CreateFood",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/FoodResponse"
+          }
+        }
+      }
+    },
+    "/foods/{id}": {
+      "get": {
+        "summary": "Returns spesific food",
+        "tags": [
+          "Foods"
+        ],
+        "operationId": "GetFoodById",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/FoodResponse"
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates spesific food",
+        "tags": [
+          "Foods"
+        ],
+        "operationId": "UpdateFoodById",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/FoodResponse"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Updates spesific food",
+        "tags": [
+          "Foods"
+        ],
+        "operationId": "DeleteFoodById",
+        "responses": {
+          "200":{}
+        }
+      }
+    }
+  },
+  "definitions": {
+  },
+  "responses": {
+
+    "FoodResponse": {
+      "description": "Food Result.",
+      "headers": {
+        "desc": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "photo": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

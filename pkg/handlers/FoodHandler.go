@@ -52,7 +52,7 @@ func UpdateFood(writer http.ResponseWriter, request *http.Request) {
 			mocks.Foods[i] = food
 			writer.Header().Add("Content-Type", "application/json")
 			writer.WriteHeader(http.StatusOK)
-			json.NewEncoder(writer).Encode("Updated")
+			json.NewEncoder(writer).Encode(food)
 			break
 		}
 	}
@@ -97,5 +97,5 @@ func AddFood(writer http.ResponseWriter, request *http.Request) {
 
 	writer.Header().Add("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusCreated)
-	json.NewEncoder(writer).Encode("Created")
+	json.NewEncoder(writer).Encode(food)
 }
