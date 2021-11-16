@@ -1,6 +1,6 @@
 package mocks
 
-import "API2/pkg/models"
+import "Go-Basic-Restful-APi/pkg/models"
 
 var Foods = []models.Food{
 	{

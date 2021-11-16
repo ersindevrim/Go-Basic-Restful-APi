@@ -1,7 +1,7 @@
 package main
 
 import (
-	"api2/pkg/handlers"
+	"Go-Basic-Restful-APi/pkg/handlers"
 	"log"
 	"net/http"
 

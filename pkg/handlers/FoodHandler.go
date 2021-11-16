@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"API2/pkg/models"
-	"api2/pkg/mocks"
+	"Go-Basic-Restful-APi/pkg/mocks"
+	"Go-Basic-Restful-APi/pkg/models"
 	"encoding/json"
 	"io/ioutil"
 	"log"
