@@ -3,9 +3,8 @@ package handlers
 import (
 	"Go-Basic-Restful-APi/pkg/mocks"
 	"Go-Basic-Restful-APi/pkg/models"
-	"database/sql"
+	"Go-Basic-Restful-APi/pkg/repositories"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,33 +14,10 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "postgres"
-	dbname   = "postgres"
-)
-
 func GetAllFoods(writer http.ResponseWriter, request *http.Request) {
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-	db, _ := sql.Open("postgres", psqlconn)
-	defer db.Close()
-
-	rows, err := db.Query(`SELECT "Id","Name","Desc","Photo" FROM "Food"`)
-
 	writer.Header().Add("Content-Type", "application/json")
-	if err != nil {
-		writer.WriteHeader(http.StatusBadRequest)
-	}
-	foods := []models.Food{}
 
-	for rows.Next() {
-		var food models.Food
-		rows.Scan(&food.Id, &food.Name, &food.Desc, &food.Photo)
-
-		foods = append(foods, food)
-	}
+	foods := repositories.GetAllFoods()
 
 	writer.WriteHeader(http.StatusOK)
 	json.NewEncoder(writer).Encode(foods)
@@ -51,12 +27,8 @@ func GetFood(writer http.ResponseWriter, request *http.Request) {
 	params := mux.Vars(request)
 	selectedID, _ := strconv.Atoi(params["id"])
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-	db, _ := sql.Open("postgres", psqlconn)
-	defer db.Close()
+	food := repositories.GetFood(selectedID)
 
-	var food models.Food
-	db.QueryRow(`SELECT "Id","Name","Desc","Photo" FROM "Food" WHERE "Id" = $1`, selectedID).Scan(&food.Id, &food.Name, &food.Desc, &food.Photo)
 	writer.Header().Add("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
 	json.NewEncoder(writer).Encode(food)
@@ -64,7 +36,9 @@ func GetFood(writer http.ResponseWriter, request *http.Request) {
 
 func UpdateFood(writer http.ResponseWriter, request *http.Request) {
 	defer request.Body.Close()
+	params := mux.Vars(request)
 	body, err := ioutil.ReadAll(request.Body)
+	selectedID, _ := strconv.Atoi(params["id"])
 
 	if err != nil {
 		log.Fatalln(err)
@@ -73,19 +47,11 @@ func UpdateFood(writer http.ResponseWriter, request *http.Request) {
 	var selectedFood models.Food
 	json.Unmarshal(body, &selectedFood)
 
-	for i, food := range mocks.Foods {
-		if food.Id == selectedFood.Id {
-			food.Name = selectedFood.Name
-			food.Desc = selectedFood.Desc
-			food.Photo = selectedFood.Photo
+	food := repositories.UpdateFood(selectedID, selectedFood)
+	writer.Header().Add("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(food)
 
-			mocks.Foods[i] = food
-			writer.Header().Add("Content-Type", "application/json")
-			writer.WriteHeader(http.StatusOK)
-			json.NewEncoder(writer).Encode(food)
-			break
-		}
-	}
 }
 
 func DeleteFood(writer http.ResponseWriter, request *http.Request) {
@@ -121,13 +87,8 @@ func AddFood(writer http.ResponseWriter, request *http.Request) {
 	var food models.Food
 	json.Unmarshal(body, &food)
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-	db, _ := sql.Open("postgres", psqlconn)
+	insertedFood := repositories.AddFood(food)
 
-	defer db.Close()
-
-	insertDynStmt := `insert into "Food"("Name", "Desc","Photo") values($1, $2, $3)`
-	insertedFood, _ := db.Exec(insertDynStmt, food.Name, food.Desc, food.Photo)
 	writer.Header().Add("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusCreated)
 	json.NewEncoder(writer).Encode(insertedFood)

@@ -58,6 +58,6 @@ func main() {
 	// swagger:response string
 	router.HandleFunc("/foods/{id}", handlers.UpdateFood).Methods("DELETE")
 
-	log.Println("API is running!")
+	log.Println("API is alive!")
 	http.ListenAndServe(":4000", router)
 }
