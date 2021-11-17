@@ -42,7 +42,7 @@ func AddFood(food models.Food) sql.Result {
 
 	defer db.Close()
 
-	insertDynStmt := `insert into "Food"("Name", "Desc","Photo") values($1, $2, $3)`
+	insertDynStmt := `INSERT INTO "Food"("Name", "Desc","Photo") values($1, $2, $3)`
 	insertedFood, _ := db.Exec(insertDynStmt, food.Name, food.Desc, food.Photo)
 
 	return insertedFood
