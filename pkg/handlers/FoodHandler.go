@@ -78,6 +78,7 @@ func DeleteFood(writer http.ResponseWriter, request *http.Request) {
 
 //Wait Gorup Example
 func AddFood(writer http.ResponseWriter, request *http.Request) {
+
 	defer request.Body.Close()
 	body, err := ioutil.ReadAll(request.Body)
 
@@ -91,7 +92,7 @@ func AddFood(writer http.ResponseWriter, request *http.Request) {
 	var wg sync.WaitGroup
 	wg.Add(1)
 	repositories.AddFood(food, &wg)
-	wg.Wait()
+	wg.Wait() // We are going to wait for waitGroup complete its job in repository.
 
 	writer.Header().Add("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusCreated)

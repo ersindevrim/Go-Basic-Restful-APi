@@ -6,6 +6,8 @@ import (
 	"sync"
 )
 
+var mutex sync.Mutex
+
 const (
 	psqlconn = "host=localhost port=5432 user=postgres password=postgres dbname=postgres sslmode=disable"
 )
@@ -39,13 +41,14 @@ func GetAllFoods() []models.Food {
 }
 
 func AddFood(food models.Food, wg *sync.WaitGroup) {
+	mutex.Lock()
 	db, _ := sql.Open("postgres", psqlconn)
 
 	defer db.Close()
 
 	insertDynStmt := `INSERT INTO "Food"("Name", "Desc","Photo") values($1, $2, $3)`
 	db.Exec(insertDynStmt, food.Name, food.Desc, food.Photo)
-
+	mutex.Unlock()
 	wg.Done()
 }
 
