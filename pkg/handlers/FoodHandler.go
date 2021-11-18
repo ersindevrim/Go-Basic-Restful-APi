@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"sync"
 
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
@@ -75,6 +76,7 @@ func DeleteFood(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
+//Wait Gorup Example
 func AddFood(writer http.ResponseWriter, request *http.Request) {
 	defer request.Body.Close()
 	body, err := ioutil.ReadAll(request.Body)
@@ -86,9 +88,12 @@ func AddFood(writer http.ResponseWriter, request *http.Request) {
 	var food models.Food
 	json.Unmarshal(body, &food)
 
-	insertedFood := repositories.AddFood(food)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	repositories.AddFood(food, &wg)
+	wg.Wait()
 
 	writer.Header().Add("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusCreated)
-	json.NewEncoder(writer).Encode(insertedFood)
+	json.NewEncoder(writer).Encode("Succesfully Inserted")
 }

@@ -3,6 +3,7 @@ package repositories
 import (
 	"Go-Basic-Restful-APi/pkg/models"
 	"database/sql"
+	"sync"
 )
 
 const (
@@ -37,15 +38,15 @@ func GetAllFoods() []models.Food {
 	return foods
 }
 
-func AddFood(food models.Food) sql.Result {
+func AddFood(food models.Food, wg *sync.WaitGroup) {
 	db, _ := sql.Open("postgres", psqlconn)
 
 	defer db.Close()
 
 	insertDynStmt := `INSERT INTO "Food"("Name", "Desc","Photo") values($1, $2, $3)`
-	insertedFood, _ := db.Exec(insertDynStmt, food.Name, food.Desc, food.Photo)
+	db.Exec(insertDynStmt, food.Name, food.Desc, food.Photo)
 
-	return insertedFood
+	wg.Done()
 }
 
 func UpdateFood(id int, newFood models.Food) models.Food {
