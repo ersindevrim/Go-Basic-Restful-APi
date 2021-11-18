@@ -41,14 +41,14 @@ func GetAllFoods() []models.Food {
 }
 
 func AddFood(food models.Food, wg *sync.WaitGroup) {
-	mutex.Lock()
+	mutex.Lock() //this will block the threat
 	db, _ := sql.Open("postgres", psqlconn)
 
 	defer db.Close()
 
 	insertDynStmt := `INSERT INTO "Food"("Name", "Desc","Photo") values($1, $2, $3)`
 	db.Exec(insertDynStmt, food.Name, food.Desc, food.Photo)
-	mutex.Unlock()
+	mutex.Unlock() //this will unblock the threat
 	wg.Done()
 }
 

@@ -76,7 +76,7 @@ func DeleteFood(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-//Wait Gorup Example
+//Wait Group Example
 func AddFood(writer http.ResponseWriter, request *http.Request) {
 
 	defer request.Body.Close()
